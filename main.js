@@ -8,6 +8,7 @@ const userList = document.getElementById('list');
 const sortGender = document.getElementById('sortGender');
 const sortAge = document.getElementById('sortAge');
 const searchInput = document.getElementById('search');
+const userCounter = document.getElementById('countUsers');
 
 searchInput.addEventListener('keypress', function (e) {
     if (e.key === 'Enter') {
@@ -29,6 +30,8 @@ function renderUsers(filteredUsers){
     filteredUsers.forEach(user => {
         userList.appendChild(createUserElement(user));
     });
+    
+    showUserCount(filteredUsers);
 }
 
 function createUserElement(user) {
@@ -102,6 +105,10 @@ function searchName() {
 
 function betterNormalize(str) {
     return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+}
+
+function showUserCount(usersList) {
+    userCounter.innerText = `Show ${usersList.length} users of ${users.length} total`;
 }
 
 function updateFilter(filter) {
