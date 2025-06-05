@@ -6,6 +6,14 @@ const ASC = "^";
 const NONE = "=";
 const userList = document.getElementById('list');
 const sortGender = document.getElementById('sortGender');
+const sortAge = document.getElementById('sortAge');
+const searchInput = document.getElementById('search');
+
+searchInput.addEventListener('keypress', function (e) {
+    if (e.key === 'Enter') {
+        sort('');
+    }
+});
 
 async function fetchUsers() {
     const data = await fetch('https://randomuser.me/api/?results=20');
@@ -51,20 +59,63 @@ function createUserElement(user) {
     return tr;
 }
 
-function sortUserByGender() {
-    const actual = sortGender.innerText
+function sort(filter) {
+    updateFilter(filter);
+    usersList = [...users];
+    usersList = searchName(usersList);
+    usersList = sortUserByGender(usersList);
+    usersList = sortByAge(usersList);
+    renderUsers(usersList);
+}
+
+function sortUserByGender(usersList) {
+    const actual = sortGender.innerText;
     switch (actual) {
         case ASC :
-            sortGender.innerText = DESC;
-            renderUsers(users.filter(user => user.gender === WOMEN));
-            break
+            return usersList.filter(user => user.gender === MEN);
         case DESC :
-            sortGender.innerText = NONE;
-            renderUsers(users);
-            break
+            return usersList.filter(user => user.gender === WOMEN);
         default :
-            sortGender.innerText = ASC;
-            renderUsers(users.filter(user => user.gender === MEN));
-            break
+            return usersList;
+    }
+}
+
+function sortByAge(usersList) {
+    const actual = sortAge.innerText;
+    switch (actual) {
+        case ASC :
+            return usersList.sort((a, b) => b.dob.age - a.dob.age);
+        case DESC :
+            return usersList.sort((a, b) => a.dob.age - b.dob.age);
+        default :
+            return usersList;
+    }
+}
+
+function searchName() {
+    const searchValue = betterNormalize(searchInput.value);
+    return usersList.filter(user =>
+        betterNormalize(user.name.first).includes(searchValue) ||
+        betterNormalize(user.name.last).includes(searchValue)
+    );
+}
+
+function betterNormalize(str) {
+    return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+}
+
+function updateFilter(filter) {
+    const elt = document.getElementById(filter);
+    if (!elt) return;
+    switch (elt.innerText) {
+        case ASC :
+            elt.innerText = DESC;
+            break;
+        case DESC :
+            elt.innerText = NONE;
+            break;
+        default :
+            elt.innerText = ASC;
+            break;
     }
 }
