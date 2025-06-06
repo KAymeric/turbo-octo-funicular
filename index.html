@@ -6,30 +6,42 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="color-scheme" content="light dark">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.fluid.classless.min.css">
+    <script src="https://unpkg.com/vue@3.3.4/dist/vue.global.prod.js"></script>
 </head>
 
 <body>
 <main>
-    <div>
-        <h1>Vanilla JS Example</h1>
-        <hr>
-        <button id="fetch-users" onclick="fetchUsers()">Fetch Users</button>
-        <input type="text" name="search" id="search">
-        <div id="countUsers"></div>
+    <div id="app">
+        <div>
+            <h1>Vanilla JS Example</h1>
+            <hr>
+            <button id="fetch-users" @click="fetchUsers">Fetch Users</button>
+            <input type="text" name="search" id="search" v-model="searchInput" @keyup.enter="sort()">
+            <div id="countUsers">{{ userCounter }}</div>
+        </div>
+        <table id="tbl-users">
+            <thead>
+            <tr>
+                <th>Photo</th>
+                <th>Nom</th>
+                <th>Email</th>
+                <th>Tel</th>
+                <th>Age <div id="sortAge" @click="sort('sortAge')">{{ filtersStatus.sortAge }}</div></th>
+                <th>Genre <div id="sortGender" @click="sort('sortGender')">{{ filtersStatus.sortGender }}</div></th>
+            </tr>
+            </thead>
+            <tbody id="list">
+                <tr v-for="user in computedUsers">
+                    <td><img :src="user.imageSource" alt=""></td>
+                    <td>{{ user.name }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.tel }}</td>
+                    <td>{{ user.age }}</td>
+                    <td>{{ user.gender }}</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
-    <table id="tbl-users">
-        <thead>
-        <tr>
-            <th>Photo</th>
-            <th>Nom</th>
-            <th>Email</th>
-            <th>Tel</th>
-            <th>Age <div id="sortAge" onclick="sort('sortAge')">=</div></th>
-            <th>Genre <div id="sortGender" onclick="sort('sortGender')">=</div></th>
-        </tr>
-        </thead>
-        <tbody id="list"></tbody>
-    </table>
 </main>
 
 <script src="main.js">
